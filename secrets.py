@@ -1,0 +1,8 @@
+#SSID = 'NOWTVYEWG2'
+#PASSWORD = 'aJgKE2ewD44M'
+
+#SSID = 'Verizon-SM-G930V-1B70'
+#PASSWORD = 'ucpl908!'
+
+SSID = 'VIVACOM_FiberNet'
+PASSWORD = '03d483b2'
