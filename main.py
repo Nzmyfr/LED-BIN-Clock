@@ -1,3 +1,4 @@
+from micropython import const
 from machine import Timer, Pin, I2C
 import ssd1306
 
@@ -7,20 +8,8 @@ import socket
 import struct
 import time
 
-NTP_DELTA = 2208988800
-host = "pool.ntp.org"
-
-i2c = I2C(1, scl=Pin(3), sda=Pin(2))
-oled_width = 128
-oled_height = 32
-oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
-
-rtc = machine.RTC()
-
-led_hours = [Pin(pin, Pin.OUT) for pin in [18, 20, 12, 13]]
-led_dot = Pin(11, Pin.OUT)
-led_minutes = [Pin(pin, Pin.OUT) for pin in [21, 22, 9, 8, 10, 19]]
-led_seconds = [Pin(pin, Pin.OUT) for pin in [27, 28, 5, 6, 7, 26]]
+NTP_DELTA = const(2208988800)
+host = const("pool.ntp.org")
 
 def connect_to_network(wlan):
     wlan.active(True)
@@ -96,16 +85,32 @@ def update_time():
 # End of update_time()
 
 def main():
+    # display initialization
+    i2c = I2C(1, scl=Pin(3), sda=Pin(2))
+    oled_width = const(128)
+    oled_height = const(32)
+    oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
+
+    # clock initialization
+    rtc = machine.RTC()
+
+    # LED pins initialization
+    led_hours = [Pin(pin, Pin.OUT) for pin in [18, 20, 12, 13]]
+    led_dot = Pin(11, Pin.OUT)
+    led_minutes = [Pin(pin, Pin.OUT) for pin in [21, 22, 9, 8, 10, 19]]
+    led_seconds = [Pin(pin, Pin.OUT) for pin in [27, 28, 5, 6, 7, 26]]
+    
+    # Get current time from intenet
     wlan = network.WLAN(network.STA_IF)
     try:
-        # Try to get current time from intenet
         connect_to_network(wlan)
         set_time()
-    #    print(time.localtime())
+        #print(time.localtime())
     except Exception as ex:
         print(f"Can't get time from Internet: {ex}")
 
     tim = Timer()
     tim.init(period=1000, mode=Timer.PERIODIC, callback=lambda t: update_time())
-    
+
+# Run the program
 main()
