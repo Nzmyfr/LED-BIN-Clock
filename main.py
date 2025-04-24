@@ -17,10 +17,10 @@ oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
 
 rtc = machine.RTC()
 
-led_seconds = [Pin(pin, Pin.OUT) for pin in [27, 28, 5, 6, 7, 26]]
-led_minutes = [Pin(pin, Pin.OUT) for pin in [21, 22, 9, 8, 10, 19]]
 led_hours = [Pin(pin, Pin.OUT) for pin in [18, 20, 12, 13]]
 led_dot = Pin(11, Pin.OUT)
+led_minutes = [Pin(pin, Pin.OUT) for pin in [21, 22, 9, 8, 10, 19]]
+led_seconds = [Pin(pin, Pin.OUT) for pin in [27, 28, 5, 6, 7, 26]]
 
 def connect_to_network(wlan):
     wlan.active(True)
