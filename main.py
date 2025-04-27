@@ -49,7 +49,7 @@ def set_time():
     machine.RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 # End of set_time()
 
-def update_time():
+def update_time(rtc,led_hours,led_dot,led_minutes,led_seconds,oled):
     print(rtc.datetime())
     timestamp = rtc.datetime()
     seconds = timestamp[6]
@@ -99,6 +99,7 @@ def main():
     led_dot = Pin(11, Pin.OUT)
     led_minutes = [Pin(pin, Pin.OUT) for pin in [21, 22, 9, 8, 10, 19]]
     led_seconds = [Pin(pin, Pin.OUT) for pin in [27, 28, 5, 6, 7, 26]]
+    internal_led = Pin('LED',Pin.OUT)
     
     # Get current time from intenet
     wlan = network.WLAN(network.STA_IF)
@@ -109,8 +110,11 @@ def main():
     except Exception as ex:
         print(f"Can't get time from Internet: {ex}")
 
-    tim = Timer()
-    tim.init(period=1000, mode=Timer.PERIODIC, callback=lambda t: update_time())
-
+    # Start update timer 
+    Timer().init(period=1000, mode=Timer.PERIODIC, callback=lambda t: update_time(rtc,led_hours,led_dot,led_minutes,led_seconds,oled))
+    
+    #Start internal led
+    Timer().init(period=500, mode=Timer.PERIODIC, callback=lambda t1: internal_led.toggle())
+    
 # Run the program
 main()
