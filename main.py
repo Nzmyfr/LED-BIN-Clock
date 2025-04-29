@@ -35,20 +35,24 @@ def connect_to_network(wlan):
 def set_time():
     NTP_QUERY = bytearray(48)
     NTP_QUERY[0] = 0x1B
-    # Get the IP address of the NTP server
+
+    # Open socket to the DNS address of the NTP server
     addr = socket.getaddrinfo(host, 123)[0][-1]
-    # Create a UDP socket for communication with the NTP server
+
+    # Create an UDP socket for communication with the NTP server
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        s.settimeout(1)  # Set a timeout of 1 second for the socket operations
+        s.settimeout(1)                  # Set a timeout of 1 second for the socket operations
         res = s.sendto(NTP_QUERY, addr)  # Send the NTP query to the server
-        msg = s.recv(48) # Receive the response (48 bytes) from the server
+        msg = s.recv(48)                 # Receive the response (48 bytes) from the server
     finally:
-        s.close() # Ensure the socket is closed after communication
+        s.close()                        # Ensure the socket is closed after communication
     val = struct.unpack("!I", msg[40:44])[0]
-    t = val - NTP_DELTA + 3*3600 #BG summer time
-    tm = time.gmtime(t)     # Convert the timestamp to a time tuple
-    machine.RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))  # Update the Real-Time Clock (RTC) with the new time
+    t = val - NTP_DELTA + 3*3600         # Bulgarian summer time
+    tm = time.gmtime(t)                  # Convert the timestamp to a time tuple
+
+    # Update the Real-Time Clock (RTC) with the new time
+    machine.RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 # End of set_time()
 
 def update_time(rtc,led_hours,led_dot,led_minutes,led_seconds,oled):
