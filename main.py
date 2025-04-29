@@ -31,7 +31,7 @@ def connect_to_network(wlan):
         print(f'ip = {status[0]}')
 # End of connect_to_network
 
-# Get time from Internet
+# Get time from Internet - https://gist.github.com/aallan/581ecf4dc92cd53e3a415b7c33a1147c
 def set_time():
     NTP_QUERY = bytearray(48)
     NTP_QUERY[0] = 0x1B
